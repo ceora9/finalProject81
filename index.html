@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="style.css">
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=Oxygen&display=swap" rel="stylesheet">
+        
         <script>
             $(document).ready(() => {
 
@@ -24,23 +25,23 @@
                 });
 
                 function addCustom() {
-                    let category = $("#item").val()
-                    if (category.length < 1) {
+                    let activity = $("#item").val()
+                    if (activity.length < 1) {
                         alert("Please enter a custom item.")
                         return
                     }
 
                     let postData = JSON.stringify({
-                        "category": category,
+                        "activity": activity,
                     })
 
                     $.ajax({
-                        url: "/category",
+                        url: "/activity",
                         type: "POST",
                         data: postData,
                         contentType:"application/json",
                         success: (res, status) => {
-                            $("#custom").append(`<li class="custom">${category}</li>`);
+                            $("#custom").append(`<li class="custom">${activity}</li>`);
                             $("#item").val("");
                         },
                         error: (xhr, _, err) => {
@@ -54,36 +55,68 @@
 
                 $("#clear").click(() => {
                     $.ajax({
-                        url: "/categories",
+                        url: "/activities",
                         type: "DELETE",
                         success: function(res, status){
                             $("#custom").html("");
-                            $("#completed").html("");
+                            $("#goal").html("");
                         }
                     })
                 });
 
-                $.get("/categories", (response, status) => {
-                    let customCategories = response.custom;
-                    for (let category of customCategories) {
-                        $("#custom").append(`<li class="custom">${category}</li>`)
+                $("#custom").on('click', 'li.custom', (event) => {
+                    let activity = $(event.target).text();
+                    $.ajax({
+                        url: `/activity/custom/${activity}`,
+                        type: "DELETE",
+                        success: function(res, status){
+                            $(event.target).remove();
+                            $("#goal").append(`<li class="goal">${activity}</li>`)
+                        }
+                    })
+                });
+
+                $("#goal").on('click', 'li.goal', (event) => {
+                    let activity = $(event.target).text();
+                    $.ajax({
+                        url: `/activity/goal/${activity}`,
+                        type: "DELETE",
+                        success: function(res, status){
+                            $(event.target).remove();
+                        }
+                    })
+                });
+
+                $.get("/activities", (response, status) => {
+                    let customActivities = response.custom;
+                    for (let activity of customActivities) {
+                        $("#custom").append(`<li class="custom">${activity}</li>`)
                     }
-                    let completedCategories = response.completed;
-                    for (let category of completedCategories) {
-                        $("#completed").append(`<li class="completed">${category}</li>`)
+                    let goalActivities = response.goal;
+                    for (let activity of goalActivities) {
+                        $("#goal").append(`<li class="goal">${activity}</li>`)
                     }
                 });
+
+                $.delete = (url, callback, type) => {
+                    return $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: callback,
+                        data: {},
+                        contentType: type
+                    });
+                }
             });
         </script>
     </head>
-
     <body>
         <h1>Take Care</h1>
         <h3><i>Take Care</i> helps you track your self-care activities.</h3>
         <p>Personalize your list of self-care activities, create daily and weekly goals, and set reminders to help you stay on your path.</p>
         
-        <div class="categories">
-            <h4>Make selections from the categories below.<br>Prioritize items that will have the biggest impact on your self-care routine.</h4>
+        <div class="activities-list">
+            <h4>Make selections from the activities below.<br>Prioritize items that will have the biggest impact on your self-care routine.</h4>
             <table id="exercise">
                 <h3>Exercise</h3>
                 <input type="radio" id="run" value="run">
@@ -131,25 +164,12 @@
                 <input type="radio" id="biking" value="biking">
                 <label for="biking">biking</label><br> 
             </table>
-            
-            <table id="activities">
-                <h3>Activities</h3>
-
-                <input type="radio" id="music" value="music">
-                <label for="music">play music</label><br>
-
-                <input type="radio" id="art" value="art">
-                <label for="art">make some art</label><br>
-
-                <input type="radio" id="bake" value="bake">
-                <label for="bake">bake</label><br>
-            </table>
         </div>
 
-        <h3>Customize your self-care items:</h3>
+        <h3>Add custom self-care items:</h3>
 
         <div id="addItem">
-            Category:
+            activity:
             <input id="item" type="text" name="add_item"/>
             <button id="submit" type="button">Add</button>
             <button id="clear" type="button">Clear All</button>
@@ -162,8 +182,8 @@
         <h4>What will you do today to take care of yourself?</h4>
         
         <div>
-            <h4>Completed:</h4>
-            <ul id="completed"></ul>
+            <h4>goal:</h4>
+            <ul id="goal"></ul>
         </div>
 
         <div class="notifications"></div>
