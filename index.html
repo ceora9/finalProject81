@@ -21,13 +21,14 @@
                 $("#add").click(() => {
                     addSelected()
                 });
+                
+                //let activity = $("#item").val()
 
-        //         $('#form :checked').each(function() {
-        //    allVals.push($(this).val());
-        //  });
-
-        function addSelected() {
-                    let activity = $("#form :checked").val(); 
+            function addSelected() {
+                    let activity = [];
+                    $("#input:checkbox[name=selection]:checked").each(function(){
+                        activity.push($("#input:checkbox").val());
+                    })
                     let postData = JSON.stringify({
                         "activity": activity,
                     });
@@ -41,7 +42,7 @@
                             success: (res, status) => {
 
                             $("#custom").append(`<li class="custom">${activity}</li>`);
-                            $("#form :checked").val("");
+                            // $("#form :checked").val("");
                         },
                         error: (xhr, _, err) => {
                             
@@ -51,6 +52,38 @@
                         }
                         })
                     }
+
+
+
+
+
+
+
+        // function addSelected() {
+        //             let activity = $("#form :checked").val(); 
+        //             let postData = JSON.stringify({
+        //                 "activity": activity,
+        //             });
+
+        //                 $.ajax({           
+        //                     url: "/activity",
+        //                     type: "POST",
+        //                     data: postData,
+        //                     contentType:"application/json",
+
+        //                     success: (res, status) => {
+
+        //                     $("#custom").append(`<li class="custom">${activity}</li>`);
+        //                     $("#form :checked").val("");
+        //                 },
+        //                 error: (xhr, _, err) => {
+                            
+        //                     if (xhr.status == 400) {
+        //                         alert(`${err}: item already exists!`);
+        //                     }
+        //                 }
+        //                 })
+        //             }
 
                 function addCustom() {
                     let activity = $("#item").val()
@@ -151,13 +184,13 @@
             <h4>Make selections from the activities below.<br>Prioritize items that will have the biggest impact on your self-care routine.</h4>
             <form id="form">
                 <h3>Exercise</h3>
-                <input type="checkbox" name="run" value="run">
+                <input type="checkbox" name="selection" value="run">
                 <label for="run">run</label><br>
 
-                <input type="checkbox" name="dance" value="dance">
+                <input type="checkbox" name="selection" value="dance">
                 <label for="dance">dance</label><br>
 
-                <input type="checkbox" name="yoga" value="yoga">
+                <input type="checkbox" name="selection" value="yoga">
                 <label for="yoga">yoga</label><br>
 
                 <h3>Sleep</h3>
