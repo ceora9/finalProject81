@@ -18,11 +18,35 @@
                     addCustom()
                 });
 
-                $(document).on("keypress", (e) => {
-                    if (e.which == 13) {
-                        addCustom()
-                    }
+                $("#add").click(() => {
+                    addSelected()
                 });
+
+                function addSelected() {
+                    let activity = $("#form :checked").val(); 
+                    let postData = JSON.stringify({
+                        "activity": activity,
+                    });
+
+                        $.ajax({           
+                            url: "/activity",
+                            type: "POST",
+                            data: postData,
+                            contentType:"application/json",
+
+                            success: (res, status) => {
+
+                            $("#goal").append(`<li class="goal">${activity}</li>`);
+                            $("#form :checked").val("");
+                        },
+                        error: (xhr, _, err) => {
+                            
+                            if (xhr.status == 400) {
+                                alert(`${err}: item already exists!`);
+                            }
+                        }
+                        })
+                    }
 
                 function addCustom() {
                     let activity = $("#item").val()
@@ -88,6 +112,10 @@
                 });
 
                 $.get("/activities", (response, status) => {
+                    let selectedActivities = response.selected;
+                    for (let activity of selectedActivities) {
+                        $("#goal").append(`<li class="goal">${activity}</li>`)
+                    }
                     let customActivities = response.custom;
                     for (let activity of customActivities) {
                         $("#custom").append(`<li class="custom">${activity}</li>`)
@@ -117,61 +145,56 @@
         
         <div class="activities-list">
             <h4>Make selections from the activities below.<br>Prioritize items that will have the biggest impact on your self-care routine.</h4>
-            <table id="exercise">
+            <form id="form">
                 <h3>Exercise</h3>
-                <input type="radio" id="run" value="run">
+                <input type="checkbox" name="run" value="run">
                 <label for="run">run</label><br>
 
-                <input type="radio" id="dance" value="dance">
+                <input type="checkbox" name="dance" value="dance">
                 <label for="dance">dance</label><br>
 
-                <input type="radio" id="yoga" value="yoga">
+                <input type="checkbox" name="yoga" value="yoga">
                 <label for="yoga">yoga</label><br>
-            </table>
-            
-            <table id="sleep">
+
                 <h3>Sleep</h3>
 
-                <input type="radio" id="yoga" value="yoga">
+                <input type="checkbox" id="yoga" value="yoga">
                 <label for="yoga">yoga</label><br>
 
-                <input type="radio" id="breathing-exercises" value="breathing-exercises">
+                <input type="checkbox" id="breathing-exercises" value="breathing-exercises">
                 <label for="breathing-exercises">breathing exercises</label><br>
-            </table>
-            
-            <table id="nutrition">
+
                 <h3>Nutrition</h3>
 
-                <input type="radio" id="water" value="water">
+                <input type="checkbox" id="water" value="water">
                 <label for="water">drink 8 glasses of water</label><br>
 
-                <input type="radio" id="vegetables" value="vegetables">
+                <input type="checkbox" id="vegetables" value="vegetables">
                 <label for="vegetables">eat 5 servings of fruits and vegetables</label><br>
-            </table>
-            
-            <table id="recreation">
+
                 <h3>Recreation & Relaxation</h3>
 
-                <input type="radio" id="hiking" value="hiking">
+                <input type="checkbox" id="hiking" value="hiking">
                 <label for="hiking">hiking</label><br>
 
-                <input type="radio" id="meditate" value="meditate">
+                <input type="checkbox" id="meditate" value="meditate">
                 <label for="meditate">meditate</label><br>
 
-                <input type="radio" id="beach" value="beach">
+                <input type="checkbox" id="beach" value="beach">
                 <label for="beach">take a walk on the beach</label><br>
 
-                <input type="radio" id="biking" value="biking">
+                <input type="checkbox" id="biking" value="biking">
                 <label for="biking">biking</label><br> 
-            </table>
-        </div>
+                
+                <button id="add" type="button">Add</button>
+            </form>
 
         <h3>Add custom self-care items:</h3>
 
         <div id="addItem">
             activity:
             <input id="item" type="text" name="add_item"/>
-            <button id="submit" type="button">Add</button>
+            <button id="submit" type="button">Submit</button>
             <button id="clear" type="button">Clear All</button>
         </div>
         <div>
@@ -190,7 +213,7 @@
 
         <div class="progress"></div>
 
-        <!-- <script src="app.js" async defer></script> -->
+        <script src="app.js" async defer></script>
 
     </body>
 </html>

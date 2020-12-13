@@ -18,13 +18,20 @@ app.get('/activities', (req, res) => {
     res.status(200).send(activities);
 });
 
-function addCustom(req, res){
-    // let exercise = "exercise";
-    // let sleep = "sleep";
-    // let nutrition = "nutrition";
-    // let recreation = "recreation";
-    // let activities = "activities";
-    
+function addSelected(req, res){
+    let selected = "selected";
+    let activity = req.body.activity;
+
+    activities[selected].push(activity);
+
+    let json = JSON.stringify(activities, null, 2);
+    fs.writeFile('activities.json', json, 'utf8', err => {
+        if(err) throw err;
+        res.status(201).send({});
+    });
+};
+
+function addCustom(req, res){    
     let custom = "custom";
     let activity = req.body.activity;
 
@@ -37,7 +44,7 @@ function addCustom(req, res){
     });
 };
 
-app.post('/activity', addCustom, (req, res) => {
+app.post('/activity', addCustom, addSelected, (req, res) => {
     res.set('Content-Type', 'application/json');
     res.status(201).send({});
 });
@@ -67,7 +74,7 @@ app.delete('/activity/custom/:activity', completeActivity, (req, res) => {
     res.status(204).send({});
 });
 
-function deletegoalActivity(req, res){
+function deleteGoalActivity(req, res){
     let goal = "goal";
     let activity = req.params.activity;
     activities[goal].splice(activity); 
@@ -79,7 +86,7 @@ function deletegoalActivity(req, res){
     });
 };
 
-app.delete('/activity/goal/:activity', deletegoalActivity, (req, res) => {
+app.delete('/activity/goal/:activity', deleteGoalActivity, (req, res) => {
     res.set('Content-Type', 'application/json');
     res.status(204).send({});
 });
