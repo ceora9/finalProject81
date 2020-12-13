@@ -1,0 +1,8 @@
+
+
+.activities-list:hover {
+    transition: all 300ms ease;
+    color: #1027d1;
+    font-weight: bolder;
+    
+}

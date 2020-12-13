@@ -21,14 +21,15 @@
                 $("#add").click(() => {
                     addSelected()
                 });
-                
-                //let activity = $("#item").val()
 
-            function addSelected() {
-                    let activity = [];
-                    $("#input:checkbox[name=selection]:checked").each(function(){
-                        activity.push($("#input:checkbox").val());
-                    })
+//                 var elem = document.querySelector('.activities-list');
+
+// elem.addEventListener("click", function(){
+//         this.classList.add('active');
+// })
+
+        function addSelected() {
+                    let activity = $("#form :checked").val(); 
                     let postData = JSON.stringify({
                         "activity": activity,
                     });
@@ -42,7 +43,7 @@
                             success: (res, status) => {
 
                             $("#custom").append(`<li class="custom">${activity}</li>`);
-                            // $("#form :checked").val("");
+                            $("#form :checked").val("");
                         },
                         error: (xhr, _, err) => {
                             
@@ -52,38 +53,6 @@
                         }
                         })
                     }
-
-
-
-
-
-
-
-        // function addSelected() {
-        //             let activity = $("#form :checked").val(); 
-        //             let postData = JSON.stringify({
-        //                 "activity": activity,
-        //             });
-
-        //                 $.ajax({           
-        //                     url: "/activity",
-        //                     type: "POST",
-        //                     data: postData,
-        //                     contentType:"application/json",
-
-        //                     success: (res, status) => {
-
-        //                     $("#custom").append(`<li class="custom">${activity}</li>`);
-        //                     $("#form :checked").val("");
-        //                 },
-        //                 error: (xhr, _, err) => {
-                            
-        //                     if (xhr.status == 400) {
-        //                         alert(`${err}: item already exists!`);
-        //                     }
-        //                 }
-        //                 })
-        //             }
 
                 function addCustom() {
                     let activity = $("#item").val()
@@ -180,55 +149,40 @@
         <h3><i>Take Care</i> helps you track your self-care activities.</h3>
         <p>Personalize your list of self-care activities, create daily and weekly goals, and set reminders to help you stay on your path.</p>
         
-        <div class="activities-list">
+        <div>
             <h4>Make selections from the activities below.<br>Prioritize items that will have the biggest impact on your self-care routine.</h4>
             <form id="form">
                 <h3>Exercise</h3>
-                <input type="checkbox" name="selection" value="run">
-                <label for="run">run</label><br>
-
-                <input type="checkbox" name="selection" value="dance">
-                <label for="dance">dance</label><br>
-
-                <input type="checkbox" name="selection" value="yoga">
-                <label for="yoga">yoga</label><br>
+                
+                    <span class=activities-list>run</span><br>
+                    <span class=activities-list>dance</span><br>
+                    <span class=activities-list>row</span><br>
+                    <span class=activities-list>cycle</span><br>
+                    <span class=activities-list>weight training</span>
 
                 <h3>Sleep</h3>
 
-                <input type="checkbox" id="yoga" value="yoga">
-                <label for="yoga">yoga</label><br>
-
-                <input type="checkbox" id="breathing-exercises" value="breathing-exercises">
-                <label for="breathing-exercises">breathing exercises</label><br>
+                <span class=activities-list>yoga</span><br>
+                <span class=activities-list>breathing exercises</span><br>
+                <span class=activities-list>camomile tea</span>
 
                 <h3>Nutrition</h3>
 
-                <input type="checkbox" id="water" value="water">
-                <label for="water">drink 8 glasses of water</label><br>
-
-                <input type="checkbox" id="vegetables" value="vegetables">
-                <label for="vegetables">eat 5 servings of fruits and vegetables</label><br>
+                <span class=activities-list>8 glasses of water</span><br>
+                <span class=activities-list>5 servings of vegetables</span>
 
                 <h3>Recreation & Relaxation</h3>
 
-                <input type="checkbox" id="hiking" value="hiking">
-                <label for="hiking">hiking</label><br>
-
-                <input type="checkbox" id="meditate" value="meditate">
-                <label for="meditate">meditate</label><br>
-
-                <input type="checkbox" id="beach" value="beach">
-                <label for="beach">take a walk on the beach</label><br>
-
-                <input type="checkbox" id="biking" value="biking">
-                <label for="biking">biking</label><br> 
+                <span class=activities-list>hike</span><br>
+                <span class=activities-list>meditation</span><br>
+                <span class=activities-list>long walk with your dog</span>
                 
-                <button id="add" type="button">Add</button>
+                <button id="add" type="button">Add</button> -->
             </form>
 
         <h3>Add custom self-care items:</h3>
 
-        <div id="addItem">
+        <div id="addItem" class="activities-list">
             activity:
             <input id="item" type="text" name="add_item"/>
             <button id="submit" type="button">Submit</button>
@@ -236,7 +190,9 @@
         </div>
         <div>
             <h4>Custom:</h4>
+            <span class=activities-list>
             <ul id="custom"></ul>
+        </span>
         </div>
 
         <h4>What will you do today to take care of yourself?</h4>
