@@ -1,8 +1,17 @@
-
+body{
+    background-color: darkgrey;
+    font-family: monospace;
+    font-size: larger;
+    margin: 50px;
+}
 
 .activities-list:hover {
     transition: all 300ms ease;
     color: #1027d1;
     font-weight: bolder;
     
+}
+
+h4{
+    color: purple;
 }

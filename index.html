@@ -22,6 +22,10 @@
                     addSelections()
                 });
 
+                $("#refine").click(() => {
+                    addRefined()
+                });
+
         function addSelections() {
                     let activity = $("#item").val(); 
                     let postData = JSON.stringify({
@@ -76,6 +80,32 @@
                         }
                     })
                 }
+
+                function addRefined() {
+                    let activity = $("#refine-goal").val(); 
+                    let postData = JSON.stringify({
+                        "activity": activity,
+                    });
+
+                        $.ajax({           
+                            url: "/activity",
+                            type: "POST",
+                            data: postData,
+                            contentType:"application/json",
+
+                            success: (res, status) => {
+
+                            $("#refined-goal").append(`<p class="refined-goal">${activity}</p>`);
+                            $("#refined-goal").val("");
+                        },
+                        error: (xhr, _, err) => {
+                            
+                            if (xhr.status == 400) {
+                                alert(`${err}: input already exists!`);
+                            }
+                        }
+                        })
+                    }
 
                 $("#clear").click(() => {
                     $.ajax({
@@ -157,7 +187,7 @@
         
         
 
-        <h3>Select items below or add custom self-care items:</h3>
+        <h3>Select items below or add custom Activities:</h3>
         <div>
             <h4>Selections:</h4>
             <span class=activities-list>
@@ -165,14 +195,14 @@
         </span>
         </div>
         <div id="addItem" class="activities-list">
-            Activity:
+            Add a custom activity:
             <input id="item" type="text" name="add_item"/>
             <button id="submit" type="button">Submit</button>
             <button id="clear" type="button">Clear All</button>
         </div>
         <div>
             <h4>Select an activity to add to your daily goal.</h4>
-            <h4>Activities:</h4>
+            <h4 id="activities">Activities:</h4>
             <span class=activities-list>
             <ul id="selections"></ul>
             <ul id="custom"></ul>
@@ -180,7 +210,13 @@
         </div>
         <div>
             <h4>Goal:</h4>
-            <ul id="goal"></ul>
+            <ul id="goal"></ul><br>
+            <div id="addRefined">
+            <p>Refine your goal:</p>
+            <input id="refine-goal" type="text" name="add_refined">
+            <button id="refine">Refine</button>
+            <div id="refined-goal"></div>
+        </div>
         </div>
 
         <div class="notifications"></div>

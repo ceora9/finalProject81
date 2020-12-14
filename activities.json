@@ -1,9 +1,17 @@
 {
   "selections": [
-    "run",
-    "bike",
-    "paint"
+    "Exercise",
+    "Meditation",
+    "Arts & crafts",
+    "Nutrition",
+    "Music",
+    "Cooking & baking"
   ],
-  "custom": [],
-  "goal": []
+  "custom": [
+    "Eat 5 servings of vegetables each day."
+  ],
+  "goal": [
+    "Nutrition",
+    "Music"
+  ]
 }
