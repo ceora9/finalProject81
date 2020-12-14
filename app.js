@@ -18,11 +18,11 @@ app.get('/activities', (req, res) => {
     res.status(200).send(activities);
 });
 
-function addSelected(req, res){
-    let selected = "selected";
-    let activity = req.body.activity;
-
-    activities[selected].push(activity);
+function addSelections(req, res){
+    let goal = "goal";
+    
+    let activity = req.params.activity;
+    activities[goal].push(activity); 
 
     let json = JSON.stringify(activities, null, 2);
     fs.writeFile('activities.json', json, 'utf8', err => {
@@ -30,6 +30,13 @@ function addSelected(req, res){
         res.status(201).send({});
     });
 };
+
+app.delete('/activity/selections/:activity', addSelections, (req, res) => {
+    res.set('Content-Type', 'application/json');
+    res.status(204).send({});
+});
+
+
 
 function addCustom(req, res){    
     let custom = "custom";
@@ -44,7 +51,7 @@ function addCustom(req, res){
     });
 };
 
-app.post('/activity', addCustom, addSelected, (req, res) => {
+app.post('/activity', addCustom, addSelections, (req, res) => {
     res.set('Content-Type', 'application/json');
     res.status(201).send({});
 });

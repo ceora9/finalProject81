@@ -1,8 +1,9 @@
 {
-  "selected": [],
+  "selections": [
+    "run",
+    "bike",
+    "paint"
+  ],
   "custom": [],
-  "goal": [
-    "paint",
-    "run"
-  ]
+  "goal": []
 }

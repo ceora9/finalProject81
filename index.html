@@ -19,17 +19,11 @@
                 });
 
                 $("#add").click(() => {
-                    addSelected()
+                    addSelections()
                 });
 
-//                 var elem = document.querySelector('.activities-list');
-
-// elem.addEventListener("click", function(){
-//         this.classList.add('active');
-// })
-
-        function addSelected() {
-                    let activity = $("#form :checked").val(); 
+        function addSelections() {
+                    let activity = $("#item").val(); 
                     let postData = JSON.stringify({
                         "activity": activity,
                     });
@@ -42,8 +36,8 @@
 
                             success: (res, status) => {
 
-                            $("#custom").append(`<li class="custom">${activity}</li>`);
-                            $("#form :checked").val("");
+                            $("#goal").append(`<li class="goal">${activity}</li>`);
+                            $("#item").val("");
                         },
                         error: (xhr, _, err) => {
                             
@@ -94,6 +88,18 @@
                     })
                 });
 
+                $("#selections").on('click', 'li.selections', (event) => {
+                    let activity = $(event.target).text();
+                    $.ajax({
+                        url: `/activity/selections/${activity}`,
+                        type: "DELETE",
+                        success: function(res, status){
+                            $(event.target).remove();
+                            $("#custom").append(`<li class="custom">${activity}</li>`)
+                        }
+                    })
+                });
+
                 $("#custom").on('click', 'li.custom', (event) => {
                     let activity = $(event.target).text();
                     $.ajax({
@@ -118,9 +124,9 @@
                 });
 
                 $.get("/activities", (response, status) => {
-                    let selectedActivities = response.selected;
-                    for (let activity of selectedActivities) {
-                        $("#goal").append(`<li class="goal">${activity}</li>`)
+                    let selectionsActivities = response.selections;
+                    for (let activity of selectionsActivities) {
+                        $("#selections").append(`<li class="selections">${activity}</li>`)
                     }
                     let customActivities = response.custom;
                     for (let activity of customActivities) {
@@ -149,54 +155,29 @@
         <h3><i>Take Care</i> helps you track your self-care activities.</h3>
         <p>Personalize your list of self-care activities, create daily and weekly goals, and set reminders to help you stay on your path.</p>
         
+        
+
+        <h3>Select items below or add custom self-care items:</h3>
         <div>
-            <h4>Make selections from the activities below.<br>Prioritize items that will have the biggest impact on your self-care routine.</h4>
-            <form id="form">
-                <h3>Exercise</h3>
-                
-                    <span class=activities-list>run</span><br>
-                    <span class=activities-list>dance</span><br>
-                    <span class=activities-list>row</span><br>
-                    <span class=activities-list>cycle</span><br>
-                    <span class=activities-list>weight training</span>
-
-                <h3>Sleep</h3>
-
-                <span class=activities-list>yoga</span><br>
-                <span class=activities-list>breathing exercises</span><br>
-                <span class=activities-list>camomile tea</span>
-
-                <h3>Nutrition</h3>
-
-                <span class=activities-list>8 glasses of water</span><br>
-                <span class=activities-list>5 servings of vegetables</span>
-
-                <h3>Recreation & Relaxation</h3>
-
-                <span class=activities-list>hike</span><br>
-                <span class=activities-list>meditation</span><br>
-                <span class=activities-list>long walk with your dog</span>
-                
-                <button id="add" type="button">Add</button> -->
-            </form>
-
-        <h3>Add custom self-care items:</h3>
-
+            <h4>Selections:</h4>
+            <span class=activities-list>
+            <ul id="selections"></ul>
+        </span>
+        </div>
         <div id="addItem" class="activities-list">
-            activity:
+            Activity:
             <input id="item" type="text" name="add_item"/>
             <button id="submit" type="button">Submit</button>
             <button id="clear" type="button">Clear All</button>
         </div>
         <div>
-            <h4>Custom:</h4>
+            <h4>Select an activity to add to your daily goal.</h4>
+            <h4>Activities:</h4>
             <span class=activities-list>
+            <ul id="selections"></ul>
             <ul id="custom"></ul>
         </span>
         </div>
-
-        <h4>What will you do today to take care of yourself?</h4>
-        
         <div>
             <h4>Goal:</h4>
             <ul id="goal"></ul>
