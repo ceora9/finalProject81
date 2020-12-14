@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Take Care</title>
+        <title>Records & Coffee</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
@@ -14,61 +14,27 @@
             $(document).ready(() => {
 
                 $("#submit").click(() => {
-                    addCustom()
+                    addRecord()
                 });
 
-                $("#add").click(() => {
-                    addSelections()
-                });
-
-                $("#refine").click(() => {
-                    addRefined()
-                });
-
-        function addSelections() {
-                    let activity = $("#item").val(); 
-                    let postData = JSON.stringify({
-                        "activity": activity,
-                    });
-
-                        $.ajax({           
-                            url: "/activity",
-                            type: "POST",
-                            data: postData,
-                            contentType:"application/json",
-
-                            success: (res, status) => {
-
-                            $("#goal").append(`<li class="goal">${activity}</li>`);
-                            $("#item").val("");
-                        },
-                        error: (xhr, _, err) => {
-                            
-                            if (xhr.status == 400) {
-                                alert(`${err}: item already exists!`);
-                            }
-                        }
-                        })
-                    }
-
-                function addCustom() {
-                    let activity = $("#item").val()
-                    if (activity.length < 1) {
-                        alert("Please enter a custom item.")
+                function addRecord() {
+                    let entry = $("#item").val()
+                    if (entry.length < 1) {
+                        alert("Please enter a record item.")
                         return
                     }
 
                     let postData = JSON.stringify({
-                        "activity": activity,
+                        "entry": entry,
                     })
 
                     $.ajax({
-                        url: "/activity",
+                        url: "/entry",
                         type: "POST",
                         data: postData,
                         contentType:"application/json",
                         success: (res, status) => {
-                            $("#custom").append(`<li class="custom">${activity}</li>`);
+                            $("#record").append(`<li class="record">${entry}</li>`);
                             $("#item").val("");
                         },
                         error: (xhr, _, err) => {
@@ -80,106 +46,20 @@
                     })
                 }
 
-                function addRefined() {
-                    let activity = $("#refine-goal").val(); 
-                    let postData = JSON.stringify({
-                        "activity": activity,
-                    });
-
-                        $.ajax({           
-                            url: "/activity",
-                            type: "POST",
-                            data: postData,
-                            contentType:"application/json",
-
-                            success: (res, status) => {
-
-                            $("#refined-goal").append(`<p class="refined-goal">${activity}</p>`);
-                            $("#refined-goal").val("");
-                        },
-                        error: (xhr, _, err) => {
-                            
-                            if (xhr.status == 400) {
-                                alert(`${err}: input already exists!`);
-                            }
-                        }
-                        })
-                    }
-
                 $("#clear").click(() => {
                     $.ajax({
-                        url: "/activities",
+                        url: "/entries",
                         type: "DELETE",
                         success: function(res, status){
-                            $("#custom").html("");
-                            $("#goal").html("");
-                            $("refined-goal").html("");
+                            $("#record").html("");
                         }
                     })
                 });
 
-                $("#selections").on('click', 'li.selections', (event) => {
-                    let activity = $(event.target).text();
-                    $.ajax({
-                        url: `/activity/selections/${activity}`,
-                        type: "DELETE",
-                        success: function(res, status){
-                            $(event.target).remove();
-                            $("#custom").append(`<li class="custom">${activity}</li>`)
-                        }
-                    })
-                });
-
-                $("#custom").on('click', 'li.custom', (event) => {
-                    let activity = $(event.target).text();
-                    $.ajax({
-                        url: `/activity/custom/${activity}`,
-                        type: "DELETE",
-                        success: function(res, status){
-                            $(event.target).remove();
-                            $("#goal").append(`<li class="goal">${activity}</li>`)
-                        }
-                    })
-                });
-
-                $("#goal").on('click', 'li.goal', (event) => {
-                    let activity = $(event.target).text();
-                    $.ajax({
-                        url: `/activity/goal/${activity}`,
-                        type: "DELETE",
-                        success: function(res, status){
-                            $(event.target).remove();
-                        }
-                    })
-                });
-
-                $("#refined-goal").on('click', 'p.refined-goal', (event) => {
-                    let activity = $(event.target).text();
-                    $.ajax({
-                        url: `/activity/refined-goal/${activity}`,
-                        type: "DELETE",
-                        success: function(res, status){
-                            $(event.target).remove();
-                        }
-                    })
-                });
-
-                $.get("/activities", (response, status) => {
-                    let selectionsActivities = response.selections;
-                    for (let activity of selectionsActivities) {
-                        $("#selections").append(`<li class="selections">${activity}</li>`)
-                    }
-                    let customActivities = response.custom;
-                    for (let activity of customActivities) {
-                        $("#custom").append(`<li class="custom">${activity}</li>`)
-                    }
-                    let goalActivities = response.goal;
-                    for (let activity of goalActivities) {
-                        $("#goal").append(`<li class="goal">${activity}</li>`)
-                    }
-                    let refinedGoalActivities = response.goal;
-                    for (let activity of refinedGoalActivities) {
-                        $("#refined-goal").append(`<p class="refined-goal">${activity}</p>`)
+                $.get("/entries", (response, status) => {
+                    let recordEntries = response.record;
+                    for (let entry of recordEntries) {
+                        $("#record").append(`<p class="record">${entry}</p>`)
                     }
                 });
 
@@ -195,52 +75,21 @@
             });
         </script>
     </head>
+    
     <body>
-        <h1>Take Care</h1>
-        <h3><i>Take Care</i> helps you track your self-care activities.</h3>
-        <p>Personalize your list of self-care activities, create daily and weekly goals, and set reminders to help you stay on your path.</p>
-        
-        
-
-        <h3>Select items below or add custom Activities:</h3>
-        <div>
-            <h4>Selections:</h4>
-            <span class=activities-list>
-            <ul id="selections"></ul>
-        </span>
-        </div>
-        <div id="addItem" class="activities-list">
-            Add a custom activity:
+              
+        <div id="addItem">
+            Add a record entry:
             <input id="item" type="text" name="add_item"/>
             <button id="submit" type="button">Submit</button>
             <button id="clear" type="button">Clear All</button>
         </div>
         <div>
-            <h3>Select an activity to add to your daily goal.</h3>
-            <h4 id="activities">Activities:</h4>
-            <span class=activities-list>
-            <ul id="selections"></ul>
-            <ul id="custom"></ul>
-        </span>
-        </div>
-        <div>
-            <h4>Goal:</h4>
-            <span class=activities-list>
-            <ul id="goal"></ul><br>
-            </span>
+            <h4 id="entries">Entries:</h4>
+            
+            <p id="record"></p>
         </div>
         
-        <div id="addRefined">
-            Refine your goal:
-            <input id="refine-goal" type="text" name="add_refined">
-            <button id="refine" type="button">Refine Goal</button>
-            <p id="refined-goal"></p>
-        </div>
-
-        <div class="notifications"></div>
-
-        <div class="progress"></div>
-
         <script src="app.js" async defer></script>
 
     </body>

@@ -9,109 +9,41 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('.'));
 
-let data = fs.readFileSync('activities.json');
-let activities = JSON.parse(data);
-console.log(activities);
+let data = fs.readFileSync('entries.json');
+let entries = JSON.parse(data);
+console.log(entries);
 
-app.get('/activities', (req, res) => {
+app.get('/entries', (req, res) => {
     res.set('Content-Type', 'application/json');
-    res.status(200).send(activities);
+    res.status(200).send(entries);
 });
 
-function addSelections(req, res){
-    let goal = "goal";
-    
-    let activity = req.params.activity;
-    activities[goal].push(activity); 
+// app.delete('/entry/selections/:entry', addSelections, (req, res) => {
+//     res.set('Content-Type', 'application/json');
+//     res.status(204).send({});
+// });
 
-    let json = JSON.stringify(activities, null, 2);
-    fs.writeFile('activities.json', json, 'utf8', err => {
+function addRecord(req, res){    
+    let record = "record";
+    let entry = req.body.entry;
+
+    entries[record].push(entry); 
+
+    let json = JSON.stringify(entries, null, 2);
+    fs.writeFile('entries.json', json, 'utf8', err => {
         if(err) throw err;
         res.status(201).send({});
     });
 };
 
-app.delete('/activity/selections/:activity', addSelections, (req, res) => {
-    res.set('Content-Type', 'application/json');
-    res.status(204).send({});
-});
-
-function addCustom(req, res){    
-    let custom = "custom";
-    let activity = req.body.activity;
-
-    activities[custom].push(activity); 
-
-    let json = JSON.stringify(activities, null, 2);
-    fs.writeFile('activities.json', json, 'utf8', err => {
-        if(err) throw err;
-        res.status(201).send({});
-    });
-};
-
-function addRefined(req, res){    
-    let refinedGoal = "refinedGoal";
-    let activity = req.body.activity;
-
-    activities[refinedGoal].push(activity); 
-
-    let json = JSON.stringify(activities, null, 2);
-    fs.writeFile('activities.json', json, 'utf8', err => {
-        if(err) throw err;
-        res.status(201).send({});
-    });
-};
-
-app.delete('/activity/refinedGoal/:activity', addRefined, (req, res) => {
-    res.set('Content-Type', 'application/json');
-    res.status(204).send({});
-});
-
-app.post('/activity', addCustom, addSelections, addRefined, (req, res) => {
+app.post('/entry', addRecord, (req, res) => {
     res.set('Content-Type', 'application/json');
     res.status(201).send({});
 });
 
-app.delete('/activities', (req, res) => {
+app.delete('/entries', (req, res) => {
     res.set('Content-Type', 'application/json');
     res.status(204).send()
-});
-
-function completeActivity(req, res){
-    let goal = "goal";
-    let activity = req.params.activity;
-    activities[goal].push(activity); 
-
-    let custom = "custom";
-    activities[custom].splice(activity); 
-
-    let json = JSON.stringify(activities, null, 2);
-    fs.writeFile('activities.json', json, 'utf8', err => {
-        if(err) throw err;
-        res.status(201).send({});
-    });
-};
-
-app.delete('/activity/custom/:activity', completeActivity, (req, res) => {
-    res.set('Content-Type', 'application/json');
-    res.status(204).send({});
-});
-
-function deleteGoalActivity(req, res){
-    let goal = "goal";
-    let activity = req.params.activity;
-    activities[goal].splice(activity); 
-
-    let json = JSON.stringify(activities, null, 2);
-    fs.writeFile('activities.json', json, 'utf8', err => {
-        if(err) throw err;
-        res.status(201).send({});
-    });
-};
-
-app.delete('/activity/goal/:activity', deleteGoalActivity, (req, res) => {
-    res.set('Content-Type', 'application/json');
-    res.status(204).send({});
 });
 
 app.get('/', (req, res) => {
